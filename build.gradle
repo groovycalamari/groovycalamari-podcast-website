@@ -1,0 +1,114 @@
+import groovycalamari.Episode
+import groovycalamari.Podcast
+
+apply plugin: 'base'
+
+ext {
+    radioPublicUrl = 'https://radiopublic.com/groovy-calamari-6nBmjq'
+    twitterHandle = 'sdelamo'
+    applePodcastUrl = 'https://pcr.apple.com/id1441904884'
+    rssUrl = 'https://nautcast.com/feed/groovy-calamari-podcast'
+    author = 'Sergio del Amo'
+    twitterHandle = '@sdelamo'
+    spotifyUrl = 'https://open.spotify.com/show/6QXGw10Z2W8hcOlWORig7Q'
+    overcastUrl = 'https://overcast.fm/itunes1441904884/groovy-calamari'
+}
+
+task createFolders {
+    doLast {
+        mkdir "${buildDir}/assets/images"
+        mkdir "${buildDir}/assets/css"
+        mkdir "${buildDir}/assets/fonts"
+
+    }
+}
+
+task copyFonts(type: Copy) {
+    dependsOn 'createFolders'
+    from "${rootProject.projectDir}/src/main/resources/fonts"
+    into "${buildDir}/assets/fonts"
+    include('*.eot')
+    include('*.svg')
+    include('*.ttf')
+    include('*.woff')
+    include('*.woff2')
+}
+
+task copyImages(type: Copy) {
+    dependsOn 'createFolders'
+    from "${rootProject.projectDir}/src/main/resources/images"
+    into "${buildDir}/assets/images"
+    include('*.svg')
+    include('*.png')
+}
+
+task copyCss(type: Copy) {
+    dependsOn 'createFolders'
+    from "${rootProject.projectDir}/src/main/resources/css"
+    into "${buildDir}/assets/css"
+    include('*.css')
+}
+
+task copyAssets {
+    dependsOn 'copyCss'
+    dependsOn 'copyImages'
+    dependsOn 'copyFonts'
+
+}
+
+task generateIndex {
+    doLast {
+
+        String fileText = new File("${rootProject.projectDir}/src/main/resources/templates/index.html").text
+
+        String text = applePodcastUrl.toURL().text
+        def rss = new XmlParser().parseText(text)
+        Podcast podcast = new Podcast()
+        podcast.title = rss.channel.title.text()
+        podcast.description = rss.channel.description.text()
+
+        for (int i = 0; i < rss.channel.item.size(); i++) {
+            Episode episode = new Episode()
+            episode.title = rss.channel.item[i].title.text()
+            episode.description = rss.channel.item[i].description.text()
+            episode.url = rss.channel.item[i].enclosure['@url'].text()
+            episode.episode = Integer.valueOf(rss.channel.item[i]['itunes:episode'].text())
+            episode.season = Integer.valueOf(rss.channel.item[i]['itunes:season'].text())
+            episode.showNotes = rss.channel.item[i]['content:encoded'].text()
+            podcast.episodes << episode
+        }
+        podcast.episodes.sort { a, b ->
+            b.episode <=> a.episode
+        }
+
+        fileText = fileText.replaceAll('@author@', author)
+        fileText = fileText.replaceAll('@overcastUrl@', overcastUrl)
+        fileText = fileText.replaceAll('@spotifyUrl@', spotifyUrl)
+        fileText = fileText.replaceAll('@radioPublicUrl@', radioPublicUrl)
+        fileText = fileText.replaceAll('@twitterHandle@', twitterHandle)
+        fileText = fileText.replaceAll('@rssUrl@', rssUrl)
+        fileText = fileText.replaceAll('@podcastName@', podcast.title)
+        fileText = fileText.replaceAll('@podcastDescription@', podcast.description)
+        fileText = fileText.replaceAll('@applePodcastUrl@', applePodcastUrl)
+
+        String episodesText = ''
+        for (Episode episode : podcast.episodes) {
+            String episodeFileText = new File("${rootProject.projectDir}/src/main/resources/templates/episode.html").text
+            episodeFileText = episodeFileText.replaceAll('@episodeurl@', "${episode.url}")
+            episodeFileText = episodeFileText.replaceAll('@seasoncount@', "${episode.season}")
+            episodeFileText = episodeFileText.replaceAll('@episodecount@', "${episode.episode}")
+            episodeFileText = episodeFileText.replaceAll('@episodetitle@', episode.title)
+            episodeFileText = episodeFileText.replaceAll('@episodesummary@', episode.description)
+            episodeFileText = episodeFileText.replaceAll('@episodenotes@', episode.showNotes)
+
+
+            episodesText += episodeFileText
+        }
+        fileText = fileText.replaceAll('@episodes@', episodesText)
+
+        File f = new File("${buildDir}/index.html")
+        f.text = fileText
+    }
+}
+
+build.dependsOn = ['copyAssets', 'generateIndex']

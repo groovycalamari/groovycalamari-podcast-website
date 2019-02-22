@@ -1,0 +1,90 @@
+@font-face {
+    font-family: 'calendas_plusregular';
+    src: url('../fonts/calendas_plus-webfont.eot');
+    src: url('../fonts/calendas_plus-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/calendas_plus-webfont.woff2') format('woff2'),
+    url('../fonts/calendas_plus-webfont.woff') format('woff'),
+    url('../fonts/calendas_plus-webfont.ttf') format('truetype'),
+    url('../fonts/calendas_plus-webfont.svg#calendas_plusregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'calendas_plusbold';
+    src: url('../fonts/calendas_plus_bold-webfont.eot');
+    src: url('../fonts/calendas_plus_bold-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/calendas_plus_bold-webfont.woff2') format('woff2'),
+    url('../fonts/calendas_plus_bold-webfont.woff') format('woff'),
+    url('../fonts/calendas_plus_bold-webfont.ttf') format('truetype'),
+    url('../fonts/calendas_plus_bold-webfont.svg#calendas_plusbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+body{
+    font-family: 'calendas_plusregular';
+    font-size: 24px;
+    background-color: rgb(0, 0, 0);
+    text-align: center;
+}
+ul {
+    list-style-type: none;
+}
+
+h1 {
+    font-size: 2em;
+    font-family: 'calendas_plusbold';
+    text-transform: uppercase;
+}
+
+body,
+a, a:hover {
+    color: rgb(255, 255, 255);
+}
+
+a {
+    text-decoration: none;
+}
+
+ul li {
+    text-align: left;
+}
+
+footer a,
+ul li a {
+    text-decoration: underline;}
+
+h2 {
+    text-transform: uppercase;
+    color: #C0254D;
+}
+
+#content {
+    max-width: 768px;
+    margin: 0 auto;
+}
+#content section,
+#content footer,
+#content header {
+    width: 100%;
+}
+
+footer,
+hr {
+    margin-top: 150px;
+}
+
+hr,
+.episode-count {
+    color: #9a9d9e;
+}
+
+.podcast_title {
+    margin-bottom: 0;
+}
+
+.podcast_author {
+    text-transform: uppercase;
+}
