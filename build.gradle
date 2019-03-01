@@ -12,6 +12,9 @@ ext {
     twitterHandle = '@sdelamo'
     spotifyUrl = 'https://open.spotify.com/show/6QXGw10Z2W8hcOlWORig7Q'
     overcastUrl = 'https://overcast.fm/itunes1441904884/groovy-calamari'
+    pocketcastUrl = 'https://pca.st/3FiH'
+    buttonWidth = 145
+    buttonHeight = 37
 }
 
 task createFolders {
@@ -82,6 +85,10 @@ task generateIndex {
         }
 
         fileText = fileText.replaceAll('@author@', author)
+
+        fileText = fileText.replaceAll('@buttonWidth@', ""+buttonWidth)
+        fileText = fileText.replaceAll('@buttonHeight@', ""+buttonHeight)
+        fileText = fileText.replaceAll('@pocketcastUrl@', pocketcastUrl)
         fileText = fileText.replaceAll('@overcastUrl@', overcastUrl)
         fileText = fileText.replaceAll('@spotifyUrl@', spotifyUrl)
         fileText = fileText.replaceAll('@radioPublicUrl@', radioPublicUrl)
