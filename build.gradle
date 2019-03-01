@@ -4,6 +4,7 @@ import groovycalamari.Podcast
 apply plugin: 'base'
 
 ext {
+    podcastUrl = 'https://podcast.groovycalamari.com'
     radioPublicUrl = 'https://radiopublic.com/groovy-calamari-6nBmjq'
     twitterHandle = 'sdelamo'
     applePodcastUrl = 'https://pcr.apple.com/id1441904884'
@@ -70,11 +71,15 @@ task generateIndex {
         podcast.title = rss.channel.title.text()
         podcast.description = rss.channel.description.text()
 
+
         for (int i = 0; i < rss.channel.item.size(); i++) {
             Episode episode = new Episode()
             episode.title = rss.channel.item[i].title.text()
             episode.description = rss.channel.item[i].description.text()
             episode.url = rss.channel.item[i].enclosure['@url'].text()
+            episode.size = new BigDecimal(rss.channel.item[i].enclosure['@length'].text())
+            episode.size = episode.size.divide(new BigDecimal("1000000"))
+            episode.size = episode.size.setScale(2, BigDecimal.ROUND_HALF_UP)
             episode.episode = Integer.valueOf(rss.channel.item[i]['itunes:episode'].text())
             episode.season = Integer.valueOf(rss.channel.item[i]['itunes:season'].text())
             episode.showNotes = rss.channel.item[i]['content:encoded'].text()
@@ -84,8 +89,9 @@ task generateIndex {
             b.episode <=> a.episode
         }
 
-        fileText = fileText.replaceAll('@author@', author)
 
+        fileText = fileText.replaceAll('@author@', author)
+        fileText = fileText.replaceAll('@podcastUrl@', podcastUrl)
         fileText = fileText.replaceAll('@buttonWidth@', ""+buttonWidth)
         fileText = fileText.replaceAll('@buttonHeight@', ""+buttonHeight)
         fileText = fileText.replaceAll('@pocketcastUrl@', pocketcastUrl)
@@ -101,6 +107,8 @@ task generateIndex {
         String episodesText = ''
         for (Episode episode : podcast.episodes) {
             String episodeFileText = new File("${rootProject.projectDir}/src/main/resources/templates/episode.html").text
+
+            episodeFileText = episodeFileText.replaceAll('@episodesize@', "${episode.size}")
             episodeFileText = episodeFileText.replaceAll('@episodeurl@', "${episode.url}")
             episodeFileText = episodeFileText.replaceAll('@seasoncount@', "${episode.season}")
             episodeFileText = episodeFileText.replaceAll('@episodecount@', "${episode.episode}")
@@ -117,5 +125,7 @@ task generateIndex {
         f.text = fileText
     }
 }
+
+
 
 build.dependsOn = ['copyAssets', 'generateIndex']

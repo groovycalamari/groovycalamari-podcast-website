@@ -88,3 +88,7 @@ hr,
 .podcast_author {
     text-transform: uppercase;
 }
+
+small {
+    display: block;
+}

@@ -13,4 +13,5 @@ class Episode {
     Integer episode
     Integer season
     Date pubDate
+    BigDecimal size
 }
