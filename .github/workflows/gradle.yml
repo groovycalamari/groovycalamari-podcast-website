@@ -24,4 +24,4 @@ jobs:
 
     - name: Copy files to bucket with the AWS CLI
       run: |
-        aws s3 sync . s3://podcast.groovycalamari.com
+        aws s3 sync build s3://podcast.groovycalamari.com
