@@ -19,6 +19,7 @@ ext {
     pocketcastUrl = 'https://pca.st/3FiH'
     buttonWidth = 145
     buttonHeight = 37
+    resourcesFolder = 'src/main/resources'
 }
 
 task createFolders {
@@ -31,7 +32,7 @@ task createFolders {
 
 task copyFonts(type: Copy) {
     dependsOn 'createFolders'
-    from "${rootProject.projectDir}/src/main/resources/fonts"
+    from "${rootProject.projectDir}/${resourcesFolder}/fonts"
     into "${buildDir}/assets/fonts"
     include('*.eot')
     include('*.svg')
@@ -42,7 +43,7 @@ task copyFonts(type: Copy) {
 
 task copyImages(type: Copy) {
     dependsOn 'createFolders'
-    from "${rootProject.projectDir}/src/main/resources/images"
+    from "${rootProject.projectDir}/${resourcesFolder}/images"
     into "${buildDir}/assets/images"
     include('*.svg')
     include('*.png')
@@ -50,7 +51,7 @@ task copyImages(type: Copy) {
 
 task copyCss(type: Copy) {
     dependsOn 'createFolders'
-    from "${rootProject.projectDir}/src/main/resources/css"
+    from "${rootProject.projectDir}/${resourcesFolder}/css"
     into "${buildDir}/assets/css"
     include('*.css')
 }
@@ -65,7 +66,7 @@ task generateIndex {
     dependsOn('renderPodcastFeed')
     doLast {
 
-        String fileText = new File("${rootProject.projectDir}/src/main/resources/templates/index.html").text
+        String fileText = new File("${rootProject.projectDir}/${resourcesFolder}/templates/index.html").text
 
         String text = new File("build/rss.xml").text
         def rss = new XmlParser().parseText(text)
