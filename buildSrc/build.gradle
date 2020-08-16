@@ -1,0 +1,15 @@
+ext {
+    micronautVersion = '2.0.1'
+    micronautItunesPodcast = '2.1.0'
+    flexMark = '0.61.26'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    implementation("io.micronaut.rss:micronaut-itunespodcast:$micronautItunesPodcast")
+    implementation("com.vladsch.flexmark:flexmark:$flexMark")
+}

@@ -1,5 +1,8 @@
 import groovycalamari.Episode
 import groovycalamari.Podcast
+import com.groovycalamari.podcast.PodcastPlugin
+
+apply plugin: PodcastPlugin
 
 apply plugin: 'base'
 
@@ -8,7 +11,7 @@ ext {
     radioPublicUrl = 'https://radiopublic.com/groovy-calamari-6nBmjq'
     twitterHandle = 'sdelamo'
     applePodcastUrl = 'https://pcr.apple.com/id1441904884'
-    rssUrl = 'https://nautcast.com/feed/groovy-calamari-podcast'
+    rssUrl = 'https://podcast.groovycalamari.com/rss.xml'
     author = 'Sergio del Amo'
     twitterHandle = '@sdelamo'
     spotifyUrl = 'https://open.spotify.com/show/6QXGw10Z2W8hcOlWORig7Q'
@@ -23,7 +26,6 @@ task createFolders {
         mkdir "${buildDir}/assets/images"
         mkdir "${buildDir}/assets/css"
         mkdir "${buildDir}/assets/fonts"
-
     }
 }
 
@@ -57,15 +59,15 @@ task copyAssets {
     dependsOn 'copyCss'
     dependsOn 'copyImages'
     dependsOn 'copyFonts'
-
 }
 
 task generateIndex {
+    dependsOn('renderPodcastFeed')
     doLast {
 
         String fileText = new File("${rootProject.projectDir}/src/main/resources/templates/index.html").text
 
-        String text = applePodcastUrl.toURL().text
+        String text = new File("build/rss.xml").text
         def rss = new XmlParser().parseText(text)
         Podcast podcast = new Podcast()
         podcast.title = rss.channel.title.text()
@@ -126,6 +128,25 @@ task generateIndex {
     }
 }
 
-
-
 build.dependsOn = ['copyAssets', 'generateIndex']
+
+podcast {
+    episodes = file("episodes")
+    output = project.buildDir
+    title = 'Groovy Calamari'
+    link = 'http://groovycalamari.com'
+    language = 'en-us'
+    copyright = 'Copyright © 2018 Sergio del Amo'
+    keywords = 'Micronaut,Microservices,Groovy,Grails,Gradle,Greach,Ratpack,Griffon,Asciidoc,Sergio del Amo,JVM'
+    description = "Are you interested in Microservices, Micronaut or the Groovy Ecosystem (Groovy, Grails, Gradle, ...). Groovy Calamari is the show for you. We review topics published in the Groovy Calamari newsletter, talk about Greach conference and other technical topics. Look for new episodes each week."
+    subtitle = "We discuss Micronaut, Gradle, Grails, Groovy, GreachConf and related matters."
+    author = "Sergio del Amo"
+    type = 'EPISODIC'
+    ownerName = "Sergio del Amo"
+    ownerEmail = "sergio.delamo@softamo.com"
+    imageUrl = "https://media.podcast.groovycalamari.com/groovycalamari.png"
+    imageLink = "http://groovycalamari.com"
+    block = false
+    categories = 'TECHNOLOGY_SOFTWARE_HOWTO'
+    explicit = false
+}
