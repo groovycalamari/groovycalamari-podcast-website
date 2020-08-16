@@ -1,3 +1,3 @@
-# groovycalamari-podcast-website
+# Groovy Calamari Podcast
 
-[![Build Status](https://travis-ci.org/sdelamo/groovycalamari-podcast-website.svg?branch=master)](https://travis-ci.org/sdelamo/groovycalamari-podcast-website)
+This repository builds the website and feed for [podcast.groovycalamari.com](https://podcast.groovycalamari.com)
